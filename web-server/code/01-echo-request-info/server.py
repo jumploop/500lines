@@ -1,5 +1,7 @@
-import BaseHTTPServer
-
+try:
+    import BaseHTTPServer
+except ImportError:
+    import http.server as BaseHTTPServer
 #-------------------------------------------------------------------------------
 
 class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -36,8 +38,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             'command'     : self.command,
             'path'        : self.path
         }
-        page = self.Page.format(**values)
-        return page
+        return self.Page.format(**values)
 
     # Send the created page.
     def send_page(self, page):
@@ -45,7 +46,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.send_header("Content-Length", str(len(page)))
         self.end_headers()
-        self.wfile.write(page)
+        self.wfile.write(bytes(page, encoding='utf-8'))
 
 #-------------------------------------------------------------------------------
 
