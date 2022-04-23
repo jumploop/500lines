@@ -1,3 +1,4 @@
+from __future__ import print_function
 import requests
 response = requests.get("http://aosabook.org/en/posa/introduction.html")
 print('status code:', response.status_code)
