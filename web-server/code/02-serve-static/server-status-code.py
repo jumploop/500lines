@@ -1,4 +1,8 @@
-import sys, os, BaseHTTPServer
+import sys, os
+try:
+    import BaseHTTPServer
+except ImportError:
+    import http.server as BaseHTTPServer
 
 #-------------------------------------------------------------------------------
 
@@ -27,10 +31,10 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     # Classify and handle request.
     def do_GET(self):
         try:
-
+            print(self.path)
             # Figure out what exactly is being requested.
             full_path = os.getcwd() + self.path
-
+            print(full_path)
             # It doesn't exist...
             if not os.path.exists(full_path):
                 raise ServerException("'{0}' not found".format(self.path))
@@ -67,7 +71,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.send_header("Content-Length", str(len(content)))
         self.end_headers()
-        self.wfile.write(content)
+        self.wfile.write(content if isinstance(content,bytes) else bytes(content, encoding='utf-8'))
 
 #-------------------------------------------------------------------------------
 
