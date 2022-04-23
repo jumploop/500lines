@@ -117,16 +117,29 @@ class Skiplist:
 
 def label(x, y, text):
     "Add a cell label centered at a given baseline point."
-    builder.start('text',
-                  dict(x=str(x),
-                       y=str(y),
-                       style="font-size: 12px; %s text-anchor: middle" % font))
+    builder.start(
+        'text',
+        dict(
+            x=str(x),
+            y=str(y),
+            style=f"font-size: 12px; {font} text-anchor: middle",
+        ),
+    )
+
     builder.data(str(text))
     builder.end('text')
 
 def title(s):
     "Add a title to the drawing."
-    builder.start("text", dict(style="font-size: 40px; text-anchor: middle; %s" % font, x=str(width/2), y="40"))
+    builder.start(
+        "text",
+        dict(
+            style=f"font-size: 40px; text-anchor: middle; {font}",
+            x=str(width / 2),
+            y="40",
+        ),
+    )
+
     builder.data(s)
     builder.end("text")
 

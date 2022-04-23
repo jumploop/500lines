@@ -80,8 +80,6 @@ class Interaction(object):
                 self.trigger('move', x, y)
             elif self.pressed == GLUT_MIDDLE_BUTTON:
                 self.translate(dx/60.0, dy/60.0, 0)
-            else:
-                pass
             glutPostRedisplay()
         self.mouse_loc = (x, y)
 

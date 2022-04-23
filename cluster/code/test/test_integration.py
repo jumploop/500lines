@@ -53,9 +53,9 @@ class Tests(unittest.TestCase):
         nodes = self.setupNetwork(5)
         # set up some timers for various events
         def request_done(output):
-            self.event("request done: %s" % output)
+            self.event(f"request done: {output}")
         def make_request(n, node):
-            self.event("request: %s" % n)
+            self.event(f"request: {n}")
             req = Requester(node, n, request_done)
             req.start()
         for time, callback in [
@@ -126,8 +126,7 @@ class Tests(unittest.TestCase):
             except IndexError:
                 return False
         def kill_leader():
-            active_leader_nodes = [n for n in nodes if is_leader(n)]
-            if active_leader_nodes:
+            if active_leader_nodes := [n for n in nodes if is_leader(n)]:
                 active_leader = active_leader_nodes[0]
                 active_idx = nodes.index(active_leader)
                 # append the N's that this node was requesting

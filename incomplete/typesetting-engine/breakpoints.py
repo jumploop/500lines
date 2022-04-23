@@ -338,7 +338,7 @@ class Typesetting:
         """Determine the best breakpoint sequence."""
         line = best_candidate.line
         seq = []
-        for j in range(line):
+        for _ in range(line):
             seq.append(best_candidate.position)
             best_candidate = best_candidate.previous
         return seq[::-1]
@@ -406,35 +406,70 @@ class Rendering:
         self.f.write('/{}\n'.format(FONT_FACE))
         self.f.write('{} selectfont\n'.format(FONT_SIZE))
         self.f.write('/xcur { currentpoint pop } def\n')
-        self.f.write('/center { '
-                     'dup '
-                     '/str exch def '
-                     '/sw str stringwidth pop def ' +
-                     '/xpos {} sw sub 2 div xcur sub def '.format(PAGE_WIDTH) +
-                     'xpos 0 rmoveto '
-                     '} def\n')
-        self.f.write('/header { ' +
-                     '/ypos {} {} sub def '.format(PAGE_HEIGHT,
-                                                   HEADER_HEIGHT) +
-                     '0 0 0 setrgbcolor '
-                     '0 setlinewidth '
-                     'newpath ' +
-                     '0 {} moveto '.format(PAGE_HEIGHT) +
-                     '{} {} lineto '.format(PAGE_WIDTH, PAGE_HEIGHT) +
-                     '{} ypos lineto '.format(PAGE_WIDTH) +
-                     '0 ypos lineto '
-                     'closepath fill stroke ' +
-                     '{} {} moveto '.format(MARGIN,
-                                            PAGE_HEIGHT - (HEADER_HEIGHT +
-                                                           HEADER_FONT_SIZE)
-                                            / 2 + 8) +
-                     '/{} {} selectfont '.format(FONT_FACE, HEADER_FONT_SIZE) +
-                     '0.5 0.5 0.9 setrgbcolor '
-                     'center show ' +
-                     '{} ypos moveto '.format(MARGIN) +
-                     '0 0 0 setrgbcolor ' +
-                     '/{} {} selectfont '.format(FONT_FACE, FONT_SIZE) +
-                     '} def\n')
+        self.f.write(
+            (
+                (
+                    '/center { '
+                    'dup '
+                    '/str exch def '
+                    '/sw str stringwidth pop def '
+                    + f'/xpos {PAGE_WIDTH} sw sub 2 div xcur sub def '
+                )
+                + 'xpos 0 rmoveto '
+                '} def\n'
+            )
+        )
+
+        self.f.write(
+            (
+                (
+                    (
+                        (
+                            (
+                                (
+                                    (
+                                        (
+                                            (
+                                                (
+                                                    (
+                                                        (
+                                                            '/header { '
+                                                            + f'/ypos {PAGE_HEIGHT} {HEADER_HEIGHT} sub def '
+                                                        )
+                                                        + '0 0 0 setrgbcolor '
+                                                        '0 setlinewidth '
+                                                        'newpath '
+                                                    )
+                                                    + f'0 {PAGE_HEIGHT} moveto '
+                                                )
+                                                + f'{PAGE_WIDTH} {PAGE_HEIGHT} lineto '
+                                            )
+                                            + f'{PAGE_WIDTH} ypos lineto '
+                                        )
+                                        + '0 ypos lineto '
+                                        'closepath fill stroke '
+                                    )
+                                    + '{} {} moveto '.format(
+                                        MARGIN,
+                                        PAGE_HEIGHT
+                                        - (HEADER_HEIGHT + HEADER_FONT_SIZE) / 2
+                                        + 8,
+                                    )
+                                    + f'/{FONT_FACE} {HEADER_FONT_SIZE} selectfont '
+                                )
+                                + '0.5 0.5 0.9 setrgbcolor '
+                                'center show '
+                            )
+                            + f'{MARGIN} ypos moveto '
+                        )
+                        + '0 0 0 setrgbcolor '
+                    )
+                    + f'/{FONT_FACE} {FONT_SIZE} selectfont '
+                )
+                + '} def\n'
+            )
+        )
+
         return self
 
     def __exit__(self, type, value, traceback):
