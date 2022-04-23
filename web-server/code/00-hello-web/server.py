@@ -1,5 +1,7 @@
-import BaseHTTPServer
-
+try:
+    import BaseHTTPServer
+except ImportError:
+    import http.server as BaseHTTPServer
 #-------------------------------------------------------------------------------
 
 class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -20,7 +22,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.send_header("Content-Length", str(len(self.Page)))
         self.end_headers()
-        self.wfile.write(self.Page)
+        self.wfile.write(bytes(self.Page, encoding='utf-8'))
 
 #-------------------------------------------------------------------------------
 
