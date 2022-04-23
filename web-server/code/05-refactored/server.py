@@ -1,4 +1,9 @@
-import sys, os, BaseHTTPServer
+import subprocess
+import sys, os
+try:
+    import BaseHTTPServer
+except ImportError:
+    import http.server as BaseHTTPServer
 
 #-------------------------------------------------------------------------------
 
@@ -47,10 +52,9 @@ class case_cgi_file(base_case):
 
     def run_cgi(self, handler):
         cmd = "python " + handler.full_path
-        child_stdin, child_stdout = os.popen2(cmd)
-        child_stdin.close()
-        data = child_stdout.read()
-        child_stdout.close()
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        data = stdout + stderr
         handler.send_content(data)
 
     def test(self, handler):
@@ -106,7 +110,7 @@ class case_directory_no_index_file(base_case):
             page = self.Listing_Page.format('\n'.join(bullets))
             handler.send_content(page)
         except OSError as msg:
-            msg = "'{0}' cannot be listed: {1}".format(self.path, msg)
+            msg = "'{0}' cannot be listed: {1}".format(handler.path, msg)
             handler.handle_error(msg)
 
     def test(self, handler):
@@ -180,7 +184,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.send_header("Content-Length", str(len(content)))
         self.end_headers()
-        self.wfile.write(content)
+        self.wfile.write(content if isinstance(content,bytes) else bytes(content, encoding='utf-8'))
 
 #-------------------------------------------------------------------------------
 

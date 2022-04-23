@@ -162,7 +162,8 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         cmd = "python " + full_path
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        self.send_content(stdout + stderr)
+        data = stdout + stderr
+        self.send_content(data)
 
     # Handle unknown objects.
     def handle_error(self, msg):
