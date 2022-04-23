@@ -1,4 +1,9 @@
-import sys, os, BaseHTTPServer
+import subprocess
+import sys, os
+try:
+    import BaseHTTPServer
+except ImportError:
+    import http.server as BaseHTTPServer
 
 #-------------------------------------------------------------------------------
 
@@ -155,11 +160,9 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def run_cgi(self, full_path):
         cmd = "python " + full_path
-        child_stdin, child_stdout = os.popen2(cmd)
-        child_stdin.close()
-        data = child_stdout.read()
-        child_stdout.close()
-        self.send_content(data)
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        self.send_content(stdout + stderr)
 
     # Handle unknown objects.
     def handle_error(self, msg):
@@ -172,7 +175,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.send_header("Content-Length", str(len(content)))
         self.end_headers()
-        self.wfile.write(content)
+        self.wfile.write(content if isinstance(content,bytes) else bytes(content, encoding='utf-8'))
 
 #-------------------------------------------------------------------------------
 
