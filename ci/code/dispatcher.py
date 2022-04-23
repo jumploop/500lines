@@ -9,6 +9,7 @@ send back the results in a 'results' messagee
 It can register as many test runners as you like. To register a test runner,
 be sure the dispatcher is started, then start the test runner.
 """
+from __future__ import print_function
 import argparse
 import os
 import re

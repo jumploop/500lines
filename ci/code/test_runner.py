@@ -8,6 +8,7 @@ given commit. It will then run tests against this version and will send back the
 results to the dispatcher. It will then wait for further instruction from the
 dispatcher.
 """
+from __future__ import print_function
 import argparse
 import errno
 import os

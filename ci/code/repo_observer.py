@@ -5,6 +5,7 @@ It checks for new commits to the master repo, and will notify the dispatcher of
 the latest commit ID, so the dispatcher can dispatch the tests against this
 commit ID.
 """
+from __future__ import print_function
 import argparse
 import os
 import re
