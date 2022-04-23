@@ -1,6 +1,8 @@
+import sys
+
 import numpy as np
 from multinomial import MultinomialDistribution
-
+xrange = xrange if sys.version_info[0] == 2 else range
 
 class MagicItemDistribution(object):
 

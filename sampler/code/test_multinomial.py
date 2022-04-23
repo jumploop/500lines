@@ -1,6 +1,9 @@
+import sys
+
 import numpy as np
 import pytest
 from multinomial import MultinomialDistribution
+xrange = xrange if sys.version_info[0] == 2 else range
 
 
 def test_init_without_rso():
@@ -80,10 +83,10 @@ def test_sample_1():
     p = np.array([1.0])
     rso = np.random.RandomState(29348)
     dist = MultinomialDistribution(p, rso=rso)
-    samples = np.array([dist.sample(1) for i in xrange(100)])
+    samples = np.array([dist.sample(1) for _ in xrange(100)])
     assert samples.shape == (100, 1)
     assert (samples == 1).all()
-    samples = np.array([dist.sample(3) for i in xrange(100)])
+    samples = np.array([dist.sample(3) for _ in xrange(100)])
     assert samples.shape == (100, 1)
     assert (samples == 3).all()
 
@@ -93,20 +96,20 @@ def test_sample_2():
     p = np.array([1.0, 0.0])
     rso = np.random.RandomState(29348)
     dist = MultinomialDistribution(p, rso=rso)
-    samples = np.array([dist.sample(1) for i in xrange(100)])
+    samples = np.array([dist.sample(1) for _ in xrange(100)])
     assert samples.shape == (100, 2)
     assert (samples == np.array([1, 0])).all()
-    samples = np.array([dist.sample(3) for i in xrange(100)])
+    samples = np.array([dist.sample(3) for _ in xrange(100)])
     assert samples.shape == (100, 2)
     assert (samples == np.array([3, 0])).all()
 
     p = np.array([0.0, 1.0])
     rso = np.random.RandomState(29348)
     dist = MultinomialDistribution(p, rso=rso)
-    samples = np.array([dist.sample(1) for i in xrange(100)])
+    samples = np.array([dist.sample(1) for _ in xrange(100)])
     assert samples.shape == (100, 2)
     assert (samples == np.array([0, 1])).all()
-    samples = np.array([dist.sample(3) for i in xrange(100)])
+    samples = np.array([dist.sample(3) for _ in xrange(100)])
     assert samples.shape == (100, 2)
     assert (samples == np.array([0, 3])).all()
 
@@ -116,11 +119,11 @@ def test_sample_3():
     p = np.array([0.5, 0.5])
     rso = np.random.RandomState(29348)
     dist = MultinomialDistribution(p, rso=rso)
-    samples = np.array([dist.sample(1) for i in xrange(100)])
+    samples = np.array([dist.sample(1) for _ in xrange(100)])
     assert samples.shape == (100, 2)
     assert ((samples == np.array([1, 0])) |
             (samples == np.array([0, 1]))).all()
-    samples = np.array([dist.sample(3) for i in xrange(100)])
+    samples = np.array([dist.sample(3) for _ in xrange(100)])
     assert samples.shape == (100, 2)
     assert ((samples == np.array([3, 0])) |
             (samples == np.array([2, 1])) |
