@@ -13,11 +13,14 @@ import errno
 import os
 import re
 import socket
-import SocketServer
 import subprocess
 import time
 import threading
 import unittest
+try:
+    import SocketServer
+except ImportError:
+    import socketserver as  SocketServer
 
 import helpers
 
@@ -38,45 +41,44 @@ class TestHandler(SocketServer.BaseRequestHandler):
 
     def handle(self):
         # self.request is the TCP socket connected to the client
-        self.data = self.request.recv(1024).strip()
+        self.data = self.request.recv(1024).decode('utf-8').strip()
         command_groups = self.command_re.match(self.data)
         command = command_groups.group(1)
         if not command:
-            self.request.sendall("Invalid command")
+            self.request.sendall(bytes("Invalid command", encoding="utf-8"))
             return
         if command == "ping":
-            print "pinged"
+            print("pinged")
             self.server.last_communication = time.time()
-            self.request.sendall("pong")
+            self.request.sendall(bytes("pong", encoding='utf-8'))
         elif command == "runtest":
-            print "got runtest command: am I busy? %s" % self.server.busy
+            print("got runtest command: am I busy? %s" % self.server.busy)
             if self.server.busy:
-                self.request.sendall("BUSY")
+                self.request.sendall(bytes("BUSY", encoding='utf-8'))
             else:
-                self.request.sendall("OK")
-                print "running"
+                self.request.sendall(bytes("OK", encoding='utf-8'))
+                print("running")
                 commit_id = command_groups.group(2)[1:]
                 self.server.busy = True
                 self.run_tests(commit_id,
                                self.server.repo_folder)
                 self.server.busy = False
         else:
-            self.request.sendall("Invalid command")
+            self.request.sendall(bytes("Invalid command", encoding='utf-8'))
 
     def run_tests(self, commit_id, repo_folder):
         # update repo
         output = subprocess.check_output(["./test_runner_script.sh",
                                         repo_folder, commit_id])
-        print output
+        print(output)
         # run the tests
         test_folder = os.path.join(repo_folder, "tests")
         suite = unittest.TestLoader().discover(test_folder)
-        result_file = open("results", "w")
-        unittest.TextTestRunner(result_file).run(suite)
-        result_file.close()
-        result_file = open("results", "r")
-        # give the dispatcher the results
-        output = result_file.read()
+        with open("results", "w") as result_file:
+            unittest.TextTestRunner(result_file).run(suite)
+        with open("results", "r") as result_file:
+            # give the dispatcher the results
+            output = result_file.read()
         helpers.communicate(self.server.dispatcher_server["host"],
                             int(self.server.dispatcher_server["port"]),
                             "results:%s:%s:%s" % (commit_id, len(output), output))
@@ -110,8 +112,8 @@ def serve():
             try:
                 server = ThreadingTCPServer((runner_host, runner_port),
                                             TestHandler)
-                print server
-                print runner_port
+                print(server)
+                print(runner_port)
                 break
             except socket.error as e:
                 if e.errno == errno.EADDRINUSE:
@@ -149,11 +151,11 @@ def serve():
                                        int(server.dispatcher_server["port"]),
                                        "status")
                     if response != "OK":
-                        print "Dispatcher is no longer functional"
+                        print("Dispatcher is no longer functional")
                         server.shutdown()
                         return
                 except socket.error as e:
-                    print "Can't communicate with dispatcher: %s" % e
+                    print("Can't communicate with dispatcher: %s" % e)
                     server.shutdown()
                     return
 
