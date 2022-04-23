@@ -68,7 +68,7 @@ def body_of(path):
     def format_title_reference(match):
         filename = match.group(1)
         title = title_of(os.path.join(dirname, filename))
-        return '<i>{}</i>'.format(title)
+        return f'<i>{title}</i>'
     body = re.sub(r'title_of\(([^)]+)\)', format_title_reference, body)
     return body
 

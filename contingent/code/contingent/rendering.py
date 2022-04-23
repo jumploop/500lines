@@ -16,7 +16,7 @@ def as_graphviz(graph):
     append = lines.append
 
     def node(task):
-        return '"{}"'.format(task)
+        return f'"{task}"'
 
     append('node [fontname=Arial shape=rect penwidth=2 color="#DAB21D"')
     append('      style=filled fillcolor="#F4E5AD"]')

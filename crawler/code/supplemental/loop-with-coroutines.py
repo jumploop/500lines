@@ -50,8 +50,8 @@ class Task:
         next_future.add_done_callback(self.step)
 
 
-urls_seen = set(['/'])
-urls_todo = set(['/'])
+urls_seen = {'/'}
+urls_todo = {'/'}
 concurrency_achieved = 0
 selector = DefaultSelector()
 stopped = False
@@ -122,7 +122,7 @@ class Fetcher:
 
     def _process_response(self):
         if not self.response:
-            print('error: {}'.format(self.url))
+            print(f'error: {self.url}')
             return
         if not self._is_html():
             return
