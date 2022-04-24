@@ -8,31 +8,30 @@ dirs.sort()
 
 total = 0
 
-print dirs[0]
+print(dirs[0])
 prev = {}
 for fn in sorted(os.listdir(dirs[0])):
     fulln = os.path.join(dirs[0], fn)
     if not fn.endswith(".py") or not os.path.isfile(fulln):
         continue
-    with file(fulln) as f:
+    with open(fulln) as f:
         lines = f.readlines()
-    print len(lines), fn
+    print(len(lines), fn)
     total += len(lines)
     prev[fn] = lines
 
-print
+print()
 for d in dirs[1:]:
-    print d
+    print(d)
     for fn, prevlines in sorted(prev.items()):
         fulln = os.path.join(d, fn)
-        with file(fulln) as f:
+        with open(fulln) as f:
             lines = f.readlines()
         diffsize = len(list(difflib.unified_diff(prevlines, lines, n=1)))
-        print diffsize, fn
+        print(diffsize, fn)
         #print "".join(difflib.unified_diff(prevlines, lines))
         prev[fn] = lines
         total += diffsize
-    print
-
-print "------------"
-print total, "total"
+    print()
+print("------------")
+print(total, "total")
