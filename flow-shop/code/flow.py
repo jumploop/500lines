@@ -77,7 +77,8 @@ def solve(data):
     strat_usage = {strategy: 0 for strategy in STRATEGIES}
 
     # Start with a random permutation of the jobs
-    perm = range(len(data))
+    perm = list(range(len(data)))
+    print(perm)
     random.shuffle(perm)
 
     # Keep track of the best solution
@@ -183,7 +184,7 @@ def parse_problem(filename, k=1):
         problem_line = '/number of jobs, number of machines, initial seed, upper bound and lower bound :/'
 
         # Strip spaces and newline characters from every line
-        lines = map(str.strip, f.readlines())
+        lines = list(map(str.strip, f.readlines()))
 
         # We prep the first line for later
         lines[0] = '/' + lines[0]
@@ -198,11 +199,11 @@ def parse_problem(filename, k=1):
             sys.exit(0)
 
         # Split every line based on spaces and convert each item to an int
-        data = [map(int, line.split()) for line in lines]
+        data = [list(map(int, line.split())) for line in lines]
 
     # We return the zipped data to rotate the rows and columns, making each
     #  item in data the durations of tasks for a particular job
-    return zip(*data)
+    return list(zip(*data))
 
 
 def pick_strategy(strategies, weights):
@@ -305,6 +306,6 @@ if __name__ == '__main__':
     else:
         print("\nUsage: python flow.py <Taillard problem file> [<instance number>]\n")
         sys.exit(0)
-
+    print(data)
     (perm, ms) = solve(data)
     print_solution(data, perm)
