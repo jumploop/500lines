@@ -94,12 +94,12 @@ def solve(data):
     checkpoint = time.time() + time_delta
     percent_complete = 10
 
-    print "\nSolving..."
+    print("\nSolving...")
 
     while time.time() < time_limit:
 
         if time.time() > checkpoint:
-            print " %d %%" % percent_complete
+            print(" %d %%" % percent_complete)
             percent_complete += 10
             checkpoint += time_delta
 
@@ -136,9 +136,9 @@ def solve(data):
                               for s in STRATEGIES])
 
             if DEBUG_SWITCH:
-                print "\nComputing another switch..."
-                print "Best performer: %s (%d)" % (results[0][1].name, results[0][0])
-                print "Worst performer: %s (%d)" % (results[-1][1].name, results[-1][0])
+                print("\nComputing another switch...")
+                print("Best performer: %s (%d)" % (results[0][1].name, results[0][0]))
+                print("Worst performer: %s (%d)" % (results[-1][1].name, results[-1][0]))
 
             # Boost the weight for the successful strategies
             for i in range(len(STRATEGIES)):
@@ -151,21 +151,20 @@ def solve(data):
             time_last_switch = time.time()
 
             if DEBUG_SWITCH:
-                print results
-                print sorted([strat_weights[STRATEGIES[i]] for i in range(len(STRATEGIES))])
+                print(results)
+                print(sorted([strat_weights[STRATEGIES[i]] for i in range(len(STRATEGIES))]))
 
             strat_improvements = {strategy: 0 for strategy in STRATEGIES}
             strat_time_spent = {strategy: 0 for strategy in STRATEGIES}
 
+    print(" %d %%\n" % percent_complete)
+    print("\nWent through %d iterations." % iteration)
 
-    print " %d %%\n" % percent_complete
-    print "\nWent through %d iterations." % iteration
-
-    print "\n(usage) Strategy:"
+    print("\n(usage) Strategy:")
     results = sorted([(strat_weights[STRATEGIES[i]], i)
                       for i in range(len(STRATEGIES))], reverse=True)
     for (w, i) in results:
-        print "(%d) \t%s" % (strat_usage[STRATEGIES[i]], STRATEGIES[i].name)
+        print("(%d) \t%s" % (strat_usage[STRATEGIES[i]], STRATEGIES[i].name))
 
     return (best_perm, best_make)
 
@@ -177,7 +176,7 @@ def parse_problem(filename, k=1):
     of flow shop scheduling. They can be found online at the following address:
     - http://mistic.heig-vd.ch/taillard/problemes.dir/ordonnancement.dir/ordonnancement.html"""
 
-    print "\nParsing..."
+    print("\nParsing...")
 
     with open(filename, 'r') as f:
         # Identify the string that separates instances
@@ -195,7 +194,7 @@ def parse_problem(filename, k=1):
             lines = '/'.join(lines).split(problem_line)[k].split('/')[2:]
         except IndexError:
             max_instances = len('/'.join(lines).split(problem_line)) - 1
-            print "\nError: Instance must be within 1 and %d\n" % max_instances
+            print("\nError: Instance must be within 1 and %d\n" % max_instances)
             sys.exit(0)
 
         # Split every line based on spaces and convert each item to an int
@@ -272,16 +271,16 @@ def print_solution(data, perm):
 
     sol = compile_solution(data, perm)
 
-    print "\nPermutation: %s\n" % str([i+1 for i in perm])
+    print("\nPermutation: %s\n" % str([i + 1 for i in perm]))
 
-    print "Makespan: %d\n" % makespan(data, perm)
+    print("Makespan: %d\n" % makespan(data, perm))
 
     row_format ="{:>15}" * 4
-    print row_format.format('Machine', 'Start Time', 'Finish Time', 'Idle Time')
+    print(row_format.format('Machine', 'Start Time', 'Finish Time', 'Idle Time'))
     for mach in range(len(data[0])):
         finish_time = sol[mach][-1] + data[perm[-1]][mach]
         idle_time = (finish_time - sol[mach][0]) - sum([job[mach] for job in data])
-        print row_format.format(mach+1, sol[mach][0], finish_time, idle_time)
+        print(row_format.format(mach + 1, sol[mach][0], finish_time, idle_time))
 
     results = []
     for i in range(len(data)):
@@ -289,12 +288,12 @@ def print_solution(data, perm):
         idle_time = (finish_time - sol[0][i]) - sum([time for time in data[perm[i]]])
         results.append((perm[i]+1, sol[0][i], finish_time, idle_time))
 
-    print "\n"
-    print row_format.format('Job', 'Start Time', 'Finish Time', 'Idle Time')
+    print("\n")
+    print(row_format.format('Job', 'Start Time', 'Finish Time', 'Idle Time'))
     for r in sorted(results):
-        print row_format.format(*r)
+        print(row_format.format(*r))
 
-    print "\n\nNote: Idle time does not include initial or final wait time.\n"
+    print("\n\nNote: Idle time does not include initial or final wait time.\n")
 
 
 if __name__ == '__main__':
@@ -304,7 +303,7 @@ if __name__ == '__main__':
     elif len(sys.argv) == 3:
         data = parse_problem(sys.argv[1], int(sys.argv[2]))
     else:
-        print "\nUsage: python flow.py <Taillard problem file> [<instance number>]\n"
+        print("\nUsage: python flow.py <Taillard problem file> [<instance number>]\n")
         sys.exit(0)
 
     (perm, ms) = solve(data)
